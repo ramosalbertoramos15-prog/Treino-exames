@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Treino para exames de admissão</title>
+<meta name="theme-color" content="#0B5563">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Treino Exames">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#F2F6F4; --surface:#FFFFFF; --ink:#0E2A33; --muted:#52666C; --line:#D2DEDB;
+  --primary:#0B5563; --on-primary:#FFFFFF; --sun:#E8A800;
+  --ok:#1B7A46; --ok-bg:#E3F3EA; --bad:#B42318; --bad-bg:#FBE9E7;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0C1A1F; --surface:#13262D; --ink:#E7F0EF; --muted:#9DB2B6; --line:#254049;
+    --primary:#5CC2D1; --on-primary:#06222A; --sun:#F0B429;
+    --ok:#5FD38D; --ok-bg:#123A25; --bad:#FF9A8F; --bad-bg:#3F1A17;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:22px 18px 56px}
+h1,h2,.q,.score{font-family:Charter,"Iowan Old Style","Palatino Linotype",Georgia,serif}
+h1{font-size:31px;line-height:1.15;margin:10px 0 6px;letter-spacing:-.01em}
+h2{font-size:20px;line-height:1.3;margin:28px 0 10px}
+.sub{color:var(--muted);margin:0 0 24px}
+.meta{color:var(--muted);font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+.row{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--c,var(--primary));border-radius:6px;padding:12px 14px;margin:0 0 10px}
+.row b{display:block;font-size:17px}
+.row.mix{background:var(--primary);color:var(--on-primary);border-color:var(--primary);border-left-color:var(--sun);padding:16px 14px;margin-bottom:18px}
+.row.mix .meta{color:inherit;opacity:.9}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c,var(--primary));transition:width .3s}
+
+.weak{margin:0;padding:0;list-style:none}
+.weak li{padding:10px 0;border-bottom:1px solid var(--line)}
+.weak li:last-child{border-bottom:0}
+.empty{color:var(--muted);margin:0}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.back{background:none;border:0;padding:10px 4px;min-height:44px;font-weight:600;color:var(--primary)}
+.prog{margin:0 0 20px}
+.tema{margin:0 0 6px;color:var(--muted);font-size:14px}
+.q{font-size:22px;line-height:1.35;margin:0 0 20px;font-weight:600}
+
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:8px;padding:12px 14px;margin:0 0 10px;min-height:54px}
+.opt .l{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;font-weight:700;font-size:14px}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt.dim{opacity:.65}
+.opt[aria-disabled="true"]{cursor:default}
+
+.fb{border-radius:8px;padding:14px;margin:6px 0 14px;background:var(--surface);border:2px solid var(--line)}
+.fb.ok{border-color:var(--ok)}
+.fb.bad{border-color:var(--bad)}
+.fb strong{display:block;margin-bottom:4px}
+
+.btn{display:block;width:100%;min-height:50px;border-radius:8px;border:2px solid var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600;padding:10px 16px;margin:0 0 10px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{min-height:42px;font-size:14px;font-weight:500;margin-top:30px}
+
+.score{font-size:68px;line-height:1;margin:14px 0 4px}
+.score small{font-size:26px;color:var(--muted)}
+.note{color:var(--muted);font-size:13px;margin:26px 0 0}
+
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const SUBJECTS = [
+{ id:"mat", nome:"Matemática", cor:"#0B5563", qs:[
+ {t:"Equações do 2.º grau", q:"Quais são as soluções de 2x² − 8x + 6 = 0?", o:["x = 1 e x = 3","x = −1 e x = −3","x = 2 e x = 3","x = 1 e x = 6"], c:0, e:"Dividindo tudo por 2 fica x² − 4x + 3 = 0. Dois números com soma 4 e produto 3 são 1 e 3."},
+ {t:"Logaritmos", q:"Qual é o valor de log₂ 32?", o:["4","5","6","16"], c:1, e:"log₂ 32 pergunta: a que expoente se eleva 2 para obter 32? Como 2⁵ = 32, o resultado é 5."},
+ {t:"Derivadas", q:"Qual é a derivada de f(x) = x³ − 3x²?", o:["3x² − 6x","3x² − 3x","x² − 6x","3x³ − 6x"], c:0, e:"Aplica-se a regra (xⁿ)′ = n·xⁿ⁻¹ a cada termo: (x³)′ = 3x² e (3x²)′ = 6x."},
+ {t:"Limites", q:"Qual é o valor de lim (x → 2) (x² − 4) / (x − 2)?", o:["0","2","4","Não existe"], c:2, e:"Factorizando, x² − 4 = (x − 2)(x + 2). Cortando (x − 2) fica x + 2, que tende para 4."},
+ {t:"Progressões aritméticas", q:"Numa progressão aritmética com a₁ = 3 e razão 4, qual é o 10.º termo?", o:["39","43","36","40"], c:0, e:"Usa-se aₙ = a₁ + (n − 1)·r. Então a₁₀ = 3 + 9 × 4 = 39."},
+ {t:"Trigonometria", q:"Se sen x = 3/5 e x está no 1.º quadrante, quanto vale cos x?", o:["4/5","3/4","5/3","2/5"], c:0, e:"De sen²x + cos²x = 1 vem cos²x = 1 − 9/25 = 16/25. No 1.º quadrante o cosseno é positivo, logo cos x = 4/5."},
+ {t:"Probabilidades", q:"Ao lançar um dado equilibrado, qual é a probabilidade de sair um número par?", o:["1/6","1/3","1/2","2/3"], c:2, e:"Há 3 casos favoráveis (2, 4 e 6) em 6 possíveis: 3/6 = 1/2."},
+ {t:"Funções", q:"Qual é o domínio de f(x) = √(x − 3)?", o:["x > 3","x ≥ 3","x ≤ 3","x ≠ 3"], c:1, e:"A raiz quadrada exige radicando maior ou igual a zero: x − 3 ≥ 0, logo x ≥ 3."}
+]},
+{ id:"qui", nome:"Química", cor:"#7A3E9D", qs:[
+ {t:"Química orgânica", q:"Qual é a fórmula geral dos alcanos?", o:["CₙH₂ₙ","CₙH₂ₙ₊₂","CₙH₂ₙ₋₂","CₙHₙ"], c:1, e:"Os alcanos são hidrocarbonetos saturados de cadeia aberta. O metano (CH₄) e o etano (C₂H₆) seguem CₙH₂ₙ₊₂."},
+ {t:"Ácidos e bases", q:"Uma solução tem [H⁺] = 10⁻³ mol/L. Qual é o seu pH?", o:["3","11","7","−3"], c:0, e:"pH = −log [H⁺] = −log 10⁻³ = 3. É uma solução ácida."},
+ {t:"Ligação química", q:"Que tipo de ligação existe no cloreto de sódio (NaCl)?", o:["Covalente apolar","Covalente polar","Iónica","Metálica"], c:2, e:"O sódio cede um electrão ao cloro. Formam-se os iões Na⁺ e Cl⁻, atraídos por forças electrostáticas: ligação iónica."},
+ {t:"Quantidade de substância", q:"Qual é a massa molar da água (H = 1 g/mol; O = 16 g/mol)?", o:["16 g/mol","17 g/mol","18 g/mol","32 g/mol"], c:2, e:"H₂O = 2 × 1 + 16 = 18 g/mol."},
+ {t:"Grupos funcionais", q:"Qual é o grupo funcional característico dos álcoois?", o:["−COOH","−OH","−CHO","−NH₂"], c:1, e:"Os álcoois têm o grupo hidroxilo (−OH) ligado a um carbono saturado. −COOH é dos ácidos carboxílicos, −CHO dos aldeídos e −NH₂ das aminas."},
+ {t:"Equilíbrio químico", q:"Num equilíbrio, aumentando a concentração de um reagente, para onde se desloca o equilíbrio (princípio de Le Chatelier)?", o:["Para os produtos","Para os reagentes","Não se altera","Deixa de existir equilíbrio"], c:0, e:"O sistema reage de modo a diminuir a perturbação: consome o reagente em excesso e forma mais produtos."},
+ {t:"Oxidação-redução", q:"Numa reacção de oxidação, a espécie que se oxida:", o:["Ganha electrões","Perde electrões","Ganha protões","Perde neutrões"], c:1, e:"Oxidação é perda de electrões e redução é ganho de electrões. O número de oxidação da espécie que se oxida aumenta."},
+ {t:"Quantidade de substância", q:"Quantas moles há em 36 g de água (M = 18 g/mol)?", o:["1 mol","2 mol","3 mol","36 mol"], c:1, e:"n = m / M = 36 / 18 = 2 mol."}
+]},
+{ id:"por", nome:"Português", cor:"#C8372D", qs:[
+ {t:"Classes de palavras", q:"Na frase «Ele chegou rapidamente», a palavra «rapidamente» é:", o:["Adjectivo","Advérbio","Preposição","Conjunção"], c:1, e:"«Rapidamente» modifica o verbo «chegou» e indica o modo. Palavras que modificam verbos, adjectivos ou outros advérbios são advérbios."},
+ {t:"Concordância verbal", q:"Qual é a frase correcta?", o:["Fazem dois anos que ele partiu.","Faz dois anos que ele partiu.","Fazem-se dois anos que ele partiu.","Faziam dois anos que ele parte."], c:1, e:"O verbo «fazer», quando indica tempo decorrido, é impessoal e fica na 3.ª pessoa do singular: «Faz dois anos»."},
+ {t:"Figuras de estilo", q:"Em «Os teus olhos são duas estrelas», que figura de estilo se usa?", o:["Metáfora","Comparação","Hipérbole","Ironia"], c:0, e:"Há uma identificação directa entre duas realidades, sem conectivo comparativo (como, tal como). Isso é uma metáfora."},
+ {t:"Funções sintácticas", q:"Em «O Carlos ofereceu flores à Maria», a expressão «à Maria» desempenha a função de:", o:["Sujeito","Complemento directo","Complemento indirecto","Predicativo do sujeito"], c:2, e:"«À Maria» indica o destinatário da acção e é introduzida pela preposição «a»: complemento indirecto. O complemento directo é «flores»."},
+ {t:"Modos e tempos verbais", q:"Em «Se eu tivesse tempo, viajaria», a forma «tivesse» está em que tempo?", o:["Pretérito perfeito do indicativo","Pretérito imperfeito do conjuntivo","Futuro do conjuntivo","Condicional"], c:1, e:"«Tivesse» (de «ter») é o pretérito imperfeito do conjuntivo, típico de hipóteses irreais. «Viajaria» é o condicional."},
+ {t:"Acentuação", q:"Qual das palavras seguintes é esdrúxula?", o:["Médico","Mesa","Café","Amor"], c:0, e:"As esdrúxulas têm a sílaba tónica na antepenúltima: mé-di-co. «Mesa» é grave, «café» e «amor» são agudas."},
+ {t:"Tipologia textual", q:"Um texto cujo objectivo principal é convencer o leitor de uma opinião é um texto:", o:["Narrativo","Descritivo","Argumentativo","Instrucional"], c:2, e:"O texto argumentativo defende uma tese com argumentos para persuadir. O narrativo conta factos, o descritivo caracteriza e o instrucional orienta passos a seguir."},
+ {t:"Ortografia", q:"Complete: «Ele é um ___ aluno, nunca faz os trabalhos.»", o:["mal","mau","Ambas servem","Nenhuma serve"], c:1, e:"«Mau» é adjectivo e qualifica o nome («aluno»); o contrário é «bom». «Mal» é advérbio ou nome e o contrário é «bem»."}
+]},
+{ id:"his", nome:"História", cor:"#B7791F", qs:[
+ {t:"História de Moçambique", q:"Em que data foi proclamada a independência de Moçambique?", o:["7 de Setembro de 1974","25 de Junho de 1975","25 de Setembro de 1964","11 de Novembro de 1975"], c:1, e:"A independência foi proclamada em 25 de Junho de 1975, com Samora Machel como primeiro Presidente."},
+ {t:"História de Moçambique", q:"Quem foi o primeiro Presidente de Moçambique independente?", o:["Eduardo Mondlane","Joaquim Chissano","Samora Machel","Armando Guebuza"], c:2, e:"Samora Machel foi o primeiro Presidente. Eduardo Mondlane foi o primeiro presidente da FRELIMO, mas morreu em 1969."},
+ {t:"Luta de libertação", q:"Em que data começou a luta armada de libertação nacional em Moçambique?", o:["25 de Junho de 1962","25 de Setembro de 1964","25 de Junho de 1975","7 de Setembro de 1974"], c:1, e:"A luta armada, dirigida pela FRELIMO, começou em 25 de Setembro de 1964, em Cabo Delgado."},
+ {t:"Primeira Guerra Mundial", q:"Em que ano começou a Primeira Guerra Mundial?", o:["1905","1914","1918","1939"], c:1, e:"Começou em 1914, depois do assassinato do arquiduque Francisco Fernando em Sarajevo, e terminou em 1918."},
+ {t:"Partilha de África", q:"A Conferência de Berlim (1884–1885) tratou sobretudo de:", o:["Terminar a Primeira Guerra Mundial","Estabelecer regras para a partilha e ocupação de África pelas potências europeias","Criar a Organização das Nações Unidas","Reconhecer a independência das colónias africanas"], c:1, e:"As potências europeias definiram regras para ocupar o território africano, sem consultar os povos africanos. Isso intensificou a partilha colonial."},
+ {t:"Guerra Fria", q:"A Guerra Fria foi sobretudo uma rivalidade entre:", o:["A Alemanha e a França","Os Estados Unidos e a União Soviética","A China e o Japão","O Reino Unido e a Espanha"], c:1, e:"Depois da Segunda Guerra Mundial, os EUA (capitalistas) e a URSS (socialista) disputaram influência no mundo sem se enfrentarem directamente."},
+ {t:"Organização das Nações Unidas", q:"Em que ano foi criada a Organização das Nações Unidas (ONU)?", o:["1919","1945","1960","1963"], c:1, e:"A ONU foi criada em 1945, depois da Segunda Guerra Mundial, para manter a paz e a segurança internacionais. A Sociedade das Nações é de 1919."},
+ {t:"União Africana", q:"A União Africana (UA) substituiu que organização?", o:["A SADC","A Organização da Unidade Africana (OUA)","A CEDEAO","A Liga Árabe"], c:1, e:"A OUA, criada em 1963, deu lugar à União Africana em 2002."}
+]},
+{ id:"geo", nome:"Geografia", cor:"#2F855A", qs:[
+ {t:"Hidrografia de Moçambique", q:"Qual é o rio de maior caudal que atravessa Moçambique?", o:["Zambeze","Limpopo","Save","Rovuma"], c:0, e:"O Zambeze é o maior rio do país em caudal e desagua no Oceano Índico."},
+ {t:"Divisão administrativa", q:"Qual é a capital da província do Niassa?", o:["Lichinga","Cuamba","Nampula","Pemba"], c:0, e:"Lichinga é a capital do Niassa. Cuamba é uma cidade da mesma província, Nampula é a capital da província com o mesmo nome e Pemba é a capital de Cabo Delgado."},
+ {t:"Divisão administrativa", q:"Quantas províncias tem Moçambique (incluindo a Cidade de Maputo)?", o:["9","10","11","12"], c:2, e:"Moçambique tem 11 províncias, contando a Cidade de Maputo, que tem estatuto de província."},
+ {t:"Coordenadas geográficas", q:"Qual é a latitude da linha do Equador?", o:["0°","23° 27′","66° 33′","90°"], c:0, e:"O Equador é o paralelo de referência e tem latitude 0°. Os trópicos estão a 23° 27′ e os pólos a 90°."},
+ {t:"Clima de Moçambique", q:"Em Moçambique, a estação chuvosa e quente ocorre sobretudo entre:", o:["Novembro e Março","Maio e Julho","Junho e Agosto","Abril e Junho"], c:0, e:"O clima é tropical, com estação quente e chuvosa de cerca de Novembro a Março e estação fresca e seca no resto do ano."},
+ {t:"Geografia de África", q:"Qual é o maior deserto quente de África e do mundo?", o:["Kalahari","Sara","Namibe","Líbia"], c:1, e:"O Sara estende-se pelo norte de África. O Kalahari e o Namibe ficam no sul."},
+ {t:"Relevo", q:"Qual é o ponto mais alto de África?", o:["Monte Quénia","Monte Binga","Kilimanjaro","Monte Rwenzori"], c:2, e:"O Kilimanjaro, na Tanzânia, tem cerca de 5 895 m. O Monte Binga é o ponto mais alto de Moçambique."},
+ {t:"Fusos horários", q:"Em quantos fusos horários se divide a Terra, cada um com 15° de longitude?", o:["12","24","36","360"], c:1, e:"360° divididos por 15° dão 24 fusos, um por cada hora do dia."}
+]},
+{ id:"bio", nome:"Biologia", cor:"#2B6CB0", qs:[
+ {t:"Citologia", q:"Que organelo celular é o principal responsável pela produção de energia (ATP) na respiração celular?", o:["Ribossoma","Mitocôndria","Complexo de Golgi","Lisossoma"], c:1, e:"As mitocôndrias realizam grande parte da respiração celular aeróbia e produzem a maior parte do ATP da célula."},
+ {t:"Genética", q:"No cruzamento de dois heterozigóticos (Aa × Aa) com dominância completa, qual é a proporção fenotípica esperada?", o:["1:1","3:1","1:2:1","9:3:3:1"], c:1, e:"Os descendentes são AA, Aa, Aa e aa. Três mostram o carácter dominante e um o recessivo: 3:1. A proporção genotípica seria 1:2:1."},
+ {t:"Fotossíntese", q:"Em que organelos ocorre a fotossíntese?", o:["Mitocôndrias","Núcleos","Cloroplastos","Vacúolos"], c:2, e:"Os cloroplastos contêm clorofila, que capta a luz usada para produzir glicose a partir de dióxido de carbono e água."},
+ {t:"Saúde e doenças", q:"A malária é transmitida pela picada de que mosquito?", o:["Aedes","Anopheles","Culex","Mosca tsé-tsé"], c:1, e:"A fêmea do mosquito Anopheles transmite o parasita Plasmodium. O Aedes transmite a dengue e a mosca tsé-tsé a doença do sono."},
+ {t:"Sistema digestivo", q:"Qual é o principal local de absorção dos nutrientes?", o:["Estômago","Intestino delgado","Intestino grosso","Esófago"], c:1, e:"O intestino delgado tem vilosidades que aumentam a superfície de absorção. No intestino grosso absorve-se sobretudo água."},
+ {t:"Ecologia", q:"Numa cadeia alimentar, os produtores são:", o:["Os animais herbívoros","Os decompositores","Os organismos que fazem fotossíntese","Os animais carnívoros"], c:2, e:"Plantas, algas e outros seres fotossintéticos produzem a matéria orgânica que alimenta toda a cadeia."},
+ {t:"Genética molecular", q:"Qual é a molécula que guarda a informação genética nas células?", o:["ADN","ATP","Glicose","Hemoglobina"], c:0, e:"O ADN guarda as instruções para produzir proteínas e passa de geração em geração."},
+ {t:"Sistema circulatório", q:"Que cavidade do coração bombeia o sangue rico em oxigénio para o resto do corpo?", o:["Aurícula direita","Aurícula esquerda","Ventrículo direito","Ventrículo esquerdo"], c:3, e:"O ventrículo esquerdo envia o sangue oxigenado para a aorta e daí para o corpo. O ventrículo direito envia o sangue para os pulmões."}
+]}
+];
+
+const KEY = "treino-exames:v1";
+let hist = { s:{}, t:{}, n:0 };
+let S = { view:"home", mode:null, pool:[], i:0, picked:null, score:0, wrong:[], confirmReset:false };
+const root = document.getElementById("app");
+
+async function load(){
+  try{
+    let raw = null;
+    try{ raw = localStorage.getItem(KEY); }catch(e){}
+    if(raw === null && window.storage){
+      try{ const r = await window.storage.get(KEY); raw = r && r.value; }catch(e){}
+    }
+    if(raw) hist = JSON.parse(raw);
+  }catch(e){ /* começa sem histórico */ }
+  render();
+}
+async function save(){
+  const raw = JSON.stringify(hist);
+  try{ localStorage.setItem(KEY, raw); return; }catch(e){}
+  try{ if(window.storage) await window.storage.set(KEY, raw); }catch(e){}
+}
+
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const prep = (q, s) => {
+  const idx = shuffle([0,1,2,3]);
+  return { src:q, sid:s.id, sn:s.nome, cor:s.cor, t:q.t, q:q.q, o:idx.map(k=>q.o[k]), c:idx.indexOf(q.c), e:q.e };
+};
+
+function start(mode){
+  let pool;
+  if(mode === "misto"){
+    pool = shuffle(SUBJECTS.flatMap(s => s.qs.map(q => prep(q, s)))).slice(0, 12);
+  } else if(mode === "erros"){
+    pool = shuffle(S.wrong.map(w => prep(w.src, SUBJECTS.find(x => x.id === w.sid))));
+  } else {
+    const s = SUBJECTS.find(x => x.id === mode);
+    pool = shuffle(s.qs.map(q => prep(q, s)));
+  }
+  S = { ...S, view:"quiz", mode: mode === "erros" ? S.mode : mode, pool, i:0, picked:null, score:0, wrong:[] };
+}
+
+function answer(k){
+  if(S.picked !== null) return;
+  const p = S.pool[S.i];
+  S.picked = k;
+  const ok = k === p.c;
+  if(ok) S.score++; else S.wrong.push({ sid:p.sid, src:p.src, t:p.t, sn:p.sn });
+  const a = hist.s[p.sid] || (hist.s[p.sid] = { a:0, k:0 });
+  a.a++; if(ok) a.k++;
+  const key = p.sid + "|" + p.t;
+  const t = hist.t[key] || (hist.t[key] = { a:0, k:0, sn:p.sn, t:p.t });
+  t.a++; if(ok) t.k++;
+  save();
+}
+
+function next(){
+  if(S.i + 1 < S.pool.length){ S.i++; S.picked = null; }
+  else { S.view = "result"; hist.n++; save(); }
+}
+
+function viewHome(){
+  const rows = SUBJECTS.map(s => {
+    const a = hist.s[s.id];
+    const pct = a ? Math.round(a.k / a.a * 100) : 0;
+    const info = a ? `${s.qs.length} perguntas, ${a.k} certas em ${a.a} respostas (${pct}%)` : `${s.qs.length} perguntas, ainda sem respostas`;
+    return `<button class="row" style="--c:${s.cor}" data-a="start" data-m="${s.id}"><b>${s.nome}</b><span class="meta">${info}</span><div class="bar"><i style="width:${pct}%"></i></div></button>`;
+  }).join("");
+
+  const weak = Object.values(hist.t)
+    .filter(t => t.a >= 2 && t.k / t.a < 0.6)
+    .sort((x, y) => x.k / x.a - y.k / y.a)
+    .slice(0, 5);
+  const weakHtml = weak.length
+    ? `<ul class="weak">${weak.map(t => `<li><b>${t.t}</b><br><span class="meta">${t.sn}: ${t.k} certas em ${t.a} respostas</span></li>`).join("")}</ul>`
+    : `<p class="empty">Os temas em que mais errar vão aparecer aqui, para saber o que estudar primeiro.</p>`;
+
+  return `
+    <h1>Treino para exames de admissão</h1>
+    <p class="sub">Moçambique. Seis disciplinas, com correcção e explicação logo a seguir a cada resposta.</p>
+    <button class="row mix" data-a="start" data-m="misto"><b>Simulado misto</b><span class="meta">12 perguntas sorteadas das 6 disciplinas</span></button>
+    ${rows}
+    <h2>Temas a reforçar</h2>
+    ${weakHtml}
+    <button class="btn ghost small" data-a="reset">${S.confirmReset ? "Confirmar: apagar todo o histórico" : "Apagar histórico"}</button>
+    <p class="note">Perguntas de treino, não oficiais. Compare sempre com o programa do exame.</p>`;
+}
+
+function viewQuiz(){
+  const p = S.pool[S.i], n = S.pool.length, done = S.picked !== null;
+  const opts = p.o.map((txt, k) => {
+    let cls = "opt", mark = String.fromCharCode(65 + k);
+    if(done){
+      if(k === p.c){ cls += " ok"; mark = "✓"; }
+      else if(k === S.picked){ cls += " bad"; mark = "✗"; }
+      else cls += " dim";
+    }
+    return `<button class="${cls}" data-a="pick" data-k="${k}" ${done ? 'aria-disabled="true"' : ""}><span class="l">${mark}</span><span>${txt}</span></button>`;
+  }).join("");
+  let fb = "";
+  if(done){
+    const ok = S.picked === p.c;
+    fb = `<div class="fb ${ok ? "ok" : "bad"}" role="status"><strong>${ok ? "Certa." : "Errada. Resposta certa: " + p.o[p.c]}</strong>${p.e}</div>
+          <button class="btn" id="next" data-a="next">${S.i + 1 < n ? "Próxima pergunta" : "Ver resultado"}</button>`;
+  }
+  return `
+    <div class="top"><button class="back" data-a="home">← Sair</button><span class="meta">${p.sn}, pergunta ${S.i + 1} de ${n}</span></div>
+    <div class="bar prog" style="--c:${p.cor}"><i style="width:${(S.i + (done ? 1 : 0)) / n * 100}%"></i></div>
+    <p class="tema">Tema: ${p.t}</p>
+    <h2 class="q">${p.q}</h2>
+    ${opts}${fb}`;
+}
+
+function viewResult(){
+  const n = S.pool.length, pct = Math.round(S.score / n * 100);
+  const msg = pct >= 80 ? "Bom resultado." : pct >= 50 ? "Resultado razoável: vale rever os temas abaixo." : "Vale a pena repetir, começando pelos temas abaixo.";
+  const temas = [...new Set(S.wrong.map(w => w.sn + ": " + w.t))];
+  const temasHtml = temas.length
+    ? `<h2>Temas para rever</h2><ul class="weak">${temas.map(t => `<li>${t}</li>`).join("")}</ul>`
+    : `<p class="empty">Nenhum erro nesta ronda.</p>`;
+  return `
+    <h1>${msg}</h1>
+    <div class="score">${S.score}<small> de ${n} (${pct}%)</small></div>
+    ${temasHtml}
+    <div style="margin-top:24px">
+      ${S.wrong.length ? `<button class="btn" data-a="wrong">Rever só as que errei</button>` : ""}
+      <button class="btn ${S.wrong.length ? "ghost" : ""}" data-a="again">Repetir</button>
+      <button class="btn ghost" data-a="home">Voltar ao início</button>
+    </div>`;
+}
+
+function render(){
+  root.innerHTML = S.view === "home" ? viewHome() : S.view === "quiz" ? viewQuiz() : viewResult();
+  if(S.view === "quiz" && S.picked !== null){
+    const b = document.getElementById("next");
+    if(b) b.focus();
+  } else {
+    window.scrollTo(0, 0);
+  }
+}
+
+root.addEventListener("click", e => {
+  const b = e.target.closest("[data-a]");
+  if(!b) return;
+  const a = b.dataset.a;
+  if(a === "start") start(b.dataset.m);
+  else if(a === "pick") answer(+b.dataset.k);
+  else if(a === "next") next();
+  else if(a === "home"){ S.view = "home"; S.confirmReset = false; }
+  else if(a === "again") start(S.mode);
+  else if(a === "wrong") start("erros");
+  else if(a === "reset"){
+    if(!S.confirmReset) S.confirmReset = true;
+    else { hist = { s:{}, t:{}, n:0 }; S.confirmReset = false; save(); }
+  }
+  render();
+});
+
+render();
+load();
+
+if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
+</body>
+</html>
