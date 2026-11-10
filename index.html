@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0B5563">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Ramos Exames">
+<meta name="apple-mobile-web-app-title" content="Treino Exames">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -90,33 +90,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .rev .rq{font-weight:600}
 .note{color:var(--muted);font-size:13px;margin:26px 0 0}
 
-/* Estilos para a capa */
-.cover-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 85vh;
-  text-align: center;
-}
-.cover-title {
-  font-size: 48px;
-  color: var(--primary);
-  margin-bottom: 10px;
-  line-height: 1.1;
-}
-.cover-subtitle {
-  font-size: 18px;
-  color: var(--muted);
-  margin-bottom: 40px;
-  max-width: 80%;
-}
-.cover-btn {
-  font-size: 20px;
-  padding: 16px 32px;
-  max-width: 250px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+
+.cover-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85vh;text-align:center}
+.cover-title{font-size:48px;color:var(--primary);margin-bottom:10px;line-height:1.1}
+.cover-subtitle{font-size:18px;color:var(--muted);margin-bottom:40px;max-width:80%}
+.cover-btn{font-size:20px;padding:16px 32px;max-width:250px;box-shadow:0 4px 6px rgba(0,0,0,.1)}
+.cover-logo{width:96px;height:96px;border-radius:22px;margin-bottom:18px}
 
 @media (prefers-reduced-motion: reduce){ .bar i{transition:none} }
 </style>
@@ -131,7 +110,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 <script src="dados-geo.js"></script>
 <script src="dados-bio.js"></script>
 <script>
-const IDS = ["mat","qui","por","his","geo","bio"];
+window.DATA = window.DATA || {};
+const IDS = ["mat","qui","por","his","geo","bio"].filter(id => DATA[id]);
 const SUBJ = IDS.map(id => Object.assign({ id }, DATA[id]));
 const KEY = "treino-exames:v2";
 let hist = { s:{}, t:{}, best:{}, n:0 };
@@ -225,11 +205,11 @@ function topicIndex(sid, t){
 function viewCover(){
   return `
     <div class="cover-screen">
+      <img class="cover-logo" src="icon-192.png" alt="">
       <h1 class="cover-title">Ramos Exames</h1>
       <p class="cover-subtitle">A sua plataforma de preparação completa para os exames de admissão</p>
       <button class="btn cover-btn" data-a="enter">Entrar</button>
-    </div>
-  `;
+    </div>`;
 }
 
 function viewHome(){
@@ -256,7 +236,7 @@ function viewHome(){
   return `
     <h1>Área de Preparação</h1>
     <p class="sub">Estude os resumos e faça testes de 40 perguntas em cada disciplina.</p>
-    <button class="row mix" data-a="misto"><b>Simulado misto</b><span class="meta">20 perguntas sorteadas das 6 disciplinas</span></button>
+    <button class="row mix" data-a="misto"><b>Simulado misto</b><span class="meta">20 perguntas sorteadas de todas as disciplinas</span></button>
     ${rows}
     <h2>Temas a reforçar</h2>
     ${weakHtml}
@@ -267,7 +247,7 @@ function viewHome(){
 function viewSubject(){
   const s = cur(), a = hist.s[s.id], b = hist.best[s.id];
   return `
-    <div class="top"><button class="back" data-a="home">← Voltar</button></div>
+    <div class="top"><button class="back" data-a="home">← Disciplinas</button></div>
     <h1 class="sh" style="--c:${s.cor}">${s.nome}</h1>
     <p class="sub">${a ? `${a.k} certas em ${a.a} respostas.` : "Ainda sem respostas."}${b !== undefined ? ` Melhor teste de 40: ${b}%.` : ""}</p>
     <button class="act" data-a="studylist"><b>Estudar</b><span class="meta">${topics(s).length} temas com resumos e fórmulas</span></button>
