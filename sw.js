@@ -1,5 +1,8 @@
-const CACHE = "treino-exames-v1";
-const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
+const CACHE = "treino-exames-v2";
+const FILES = [
+  "./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png",
+  "dados-mat.js", "dados-qui.js", "dados-por.js", "dados-his.js", "dados-geo.js", "dados-bio.js"
+];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
