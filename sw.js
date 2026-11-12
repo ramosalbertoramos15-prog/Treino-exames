@@ -1,7 +1,7 @@
-const CACHE = "ramos-exames-v3";
+const CACHE = "treino-exames-v3";
 const FILES = [
   "./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png",
-  "dados-mat.js", "dados-qui.js", "dados-por.js", "dados-his.js", "dados-geo.js", "dados-bio.js"
+  "dados-mat.js", "dados-qui.js", "dados-por.js", "dados-his.js", "dados-geo.js", "dados-bio.js", "dados-exames.js"
 ];
 
 self.addEventListener("install", e => {
