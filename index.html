@@ -136,9 +136,11 @@ details.rv .rvb p{margin:6px 0}
 <script src="dados-his.js"></script>
 <script src="dados-geo.js"></script>
 <script src="dados-bio.js"></script>
+<script src="dados-fil.js"></script>
+<script src="dados-fis.js"></script>
 <script src="dados-exames.js"></script>
 <script>
-const IDS = ["mat","qui","por","his","geo","bio"];
+const IDS = ["mat","fis","qui","fil","por","his","geo","bio"];
 const SUBJ = IDS.map(id => Object.assign({ id }, DATA[id]));
 const KEY = "treino-exames:v2";
 let hist = { s:{}, t:{}, best:{}, n:0, e:{} };
@@ -252,8 +254,8 @@ function viewHome(){
 
   return `
     <h1>Treino para exames de admissão</h1>
-    <p class="sub">Estude os resumos e faça testes de 40 perguntas em cada disciplina.</p>
-    <button class="row mix" data-a="misto"><b>Simulado misto</b><span class="meta">20 perguntas sorteadas das 6 disciplinas</span></button>
+    <p class="sub">Estude os resumos, treine por tema e faça testes completos em cada disciplina.</p>
+    <button class="row mix" data-a="misto"><b>Simulado misto</b><span class="meta">20 perguntas sorteadas das ${SUBJ.length} disciplinas</span></button>
     ${EXAMS.length ? `<button class="row exm mix2" data-a="exlist"><b>Exames anteriores</b><span class="meta">${EXAMS.length} exames e ensaios, ${EXAMS.reduce((n, e) => n + e.q.length, 0)} perguntas, com resposta e explicação de cada uma</span></button>` : ""}
     ${rows}
     <h2>Temas a reforçar</h2>
@@ -267,10 +269,12 @@ function viewSubject(){
   return `
     <div class="top"><button class="back" data-a="home">← Disciplinas</button></div>
     <h1 class="sh" style="--c:${s.cor}">${s.nome}</h1>
-    <p class="sub">${a ? `${a.k} certas em ${a.a} respostas.` : "Ainda sem respostas."}${b !== undefined ? ` Melhor teste de 40: ${b}%.` : ""}</p>
+    <p class="sub">${a ? `${a.k} certas em ${a.a} respostas.` : "Ainda sem respostas."}${b !== undefined ? ` Melhor teste: ${b}%.` : ""}</p>
     <button class="act" data-a="studylist"><b>Estudar</b><span class="meta">${topics(s).length} temas com resumos e fórmulas</span></button>
     <button class="act" data-a="go" data-n="40" data-f="1"><b>Treino de 40 perguntas</b><span class="meta">correcção e explicação a cada resposta</span></button>
     <button class="act" data-a="go" data-n="40" data-f="0" data-test="1"><b>Teste de 40 perguntas</b><span class="meta">nota e correcção só no fim, como no exame</span></button>
+    ${s.q.length >= 60 ? `<button class="act" data-a="go" data-n="60" data-f="1"><b>Treino de 60 perguntas</b><span class="meta">correcção e explicação a cada resposta</span></button>
+    <button class="act" data-a="go" data-n="60" data-f="0" data-test="1"><b>Teste de 60 perguntas</b><span class="meta">nota e correcção só no fim, como no exame</span></button>` : ""}
     <button class="act" data-a="go" data-n="10" data-f="1"><b>10 perguntas rápidas</b><span class="meta">sorteadas, com correcção imediata</span></button>
     ${EXAMS.some(e => e.subj === s.id) ? `<button class="act" data-a="exlist"><b>Exames anteriores</b><span class="meta">${EXAMS.filter(e => e.subj === s.id).length} exames com resposta e explicação de cada pergunta</span></button>` : ""}`;
 }

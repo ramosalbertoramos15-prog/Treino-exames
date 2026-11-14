@@ -58,5 +58,26 @@ q: [
 ["Combinatória e probabilidades","De um grupo de 4 homens e 3 mulheres escolhe-se uma comissão de 3 pessoas. Em quantas há pelo menos uma mulher?",["31","35","30","34"],0,"Pelo menos uma mulher = total − nenhuma mulher = C(7, 3) − C(4, 3) = 35 − 4 = 31."],
 ["Combinatória e probabilidades","Lançam-se dois dados equilibrados. Qual é a probabilidade de a soma ser 8?",["5/36","1/6","1/9","7/36"],0,"Soma 8: (2,6), (3,5), (4,4), (5,3) e (6,2), ou seja, 5 casos em 36: 5/36."],
 ["Combinatória e probabilidades","Qual é o termo independente de x no desenvolvimento de (x + 1/x)<sup>6</sup>?",["20","15","6","1"],0,"O termo geral é C(6, k)·x<sup>6−k</sup>·(1/x)<sup>k</sup> = C(6, k)·x<sup>6−2k</sup>. O expoente é 0 quando k = 3, e C(6, 3) = 20."],
-["Combinatória e probabilidades","Uma urna tem 5 bolas vermelhas e 3 azuis. Retiram-se 2 bolas sem reposição. Qual é a probabilidade de ambas serem vermelhas?",["5/14","25/64","5/8","3/14"],0,"Sem reposição: P = 5/8 × 4/7 = 20/56 = 5/14."]
+["Combinatória e probabilidades","Uma urna tem 5 bolas vermelhas e 3 azuis. Retiram-se 2 bolas sem reposição. Qual é a probabilidade de ambas serem vermelhas?",["5/14","25/64","5/8","3/14"],0,"Sem reposição: P = 5/8 × 4/7 = 20/56 = 5/14."],
+
+["Funções", "Quais são os zeros de f(x) = x² − 4x + 3?", ["1 e 3", "−1 e −3", "2 e 3", "1 e 4"], 0, "x² − 4x + 3 = (x − 1)(x − 3) = 0, logo x = 1 ou x = 3."],
+["Funções", "Qual é o domínio de f(x) = ln(x − 2)?", ["]2, +∞[", "[2, +∞[", "]−∞, 2[", "ℝ"], 0, "O argumento do logaritmo tem de ser positivo: x − 2 &gt; 0, logo x &gt; 2 (o 2 não entra)."],
+["Funções", "Sendo f(x) = 2x + 1 e g(x) = x², qual é o valor de (f ∘ g)(3)?", ["19", "49", "16", "21"], 0, "(f ∘ g)(3) = f(g(3)) = f(9) = 2 × 9 + 1 = 19. A ordem contrária, g(f(3)) = 7² = 49."],
+["Equações e inequações", "Qual é o conjunto-solução de |x − 2| &lt; 3?", ["]−1, 5[", "]−∞, −1[ ∪ ]5, +∞[", "]−5, 1[", "[−1, 5]"], 0, "|A| &lt; 3 ⇔ −3 &lt; x − 2 &lt; 3 ⇔ −1 &lt; x &lt; 5."],
+["Equações e inequações", "Qual é o conjunto-solução de x² − 5x + 6 ≤ 0?", ["[2, 3]", "]−∞, 2] ∪ [3, +∞[", "]2, 3[", "[−3, −2]"], 0, "As raízes são 2 e 3 e a parábola tem concavidade para cima; é negativa entre as raízes e nula nelas: [2, 3]."],
+["Equações e inequações", "Se x + y = 7 e x − y = 1, quanto vale x · y?", ["12", "7", "10", "24"], 0, "Somando as equações: 2x = 8, logo x = 4 e y = 3. Então x · y = 12."],
+["Exponenciais e logaritmos", "Qual é o valor de log₂ 32?", ["5", "4", "16", "6"], 0, "2⁵ = 32, logo log₂ 32 = 5."],
+["Exponenciais e logaritmos", "Qual é a solução de 5<sup>x−1</sup> = 25?", ["x = 3", "x = 2", "x = 5", "x = 4"], 0, "25 = 5², logo x − 1 = 2 e x = 3."],
+["Trigonometria", "Qual é o valor de cos 60° + sen 30°?", ["1", "1/2", "√3", "0"], 0, "cos 60° = 1/2 e sen 30° = 1/2. A soma é 1."],
+["Trigonometria", "Quais são as soluções de cos x = 0 em [0, 2π[?", ["π/2 e 3π/2", "0 e π", "π/4 e 3π/4", "π e 2π"], 0, "O cosseno anula-se em x = π/2 e em x = 3π/2 dentro do intervalo."],
+["Progressões", "Numa PA com a₁ = 5 e razão 3, qual é o décimo termo?", ["32", "35", "29", "27"], 0, "a₁₀ = a₁ + 9r = 5 + 27 = 32."],
+["Progressões", "Numa PG com a₁ = 2 e razão 3 (2, 6, 18, …), qual é o quinto termo?", ["162", "486", "54", "48"], 0, "a₅ = a₁ · q⁴ = 2 × 81 = 162."],
+["Limites e derivadas", "Qual é o valor de lim (x → 2) (x² − 4)/(x − 2)?", ["4", "0", "2", "Não existe"], 0, "(x² − 4)/(x − 2) = (x + 2)(x − 2)/(x − 2) = x + 2, que tende para 4."],
+["Limites e derivadas", "Qual é o valor de f′(1), sendo f(x) = 3x² − 2x?", ["4", "1", "6", "−2"], 0, "f′(x) = 6x − 2, logo f′(1) = 6 − 2 = 4."],
+["Limites e derivadas", "Qual é a derivada de f(x) = x³ + ln x?", ["3x² + 1/x", "3x² + x", "x⁴/4 + 1/x", "3x² + ln x"], 0, "(x³)′ = 3x² e (ln x)′ = 1/x."],
+["Integrais", "Qual é o valor de ∫ de 0 a 1 de 3x² dx?", ["1", "3", "3/2", "0"], 0, "A primitiva é x³; entre 0 e 1 dá 1 − 0 = 1."],
+["Integrais", "Qual é a primitiva de cos x?", ["sen x + C", "−sen x + C", "cos x + C", "−cos x + C"], 0, "(sen x)′ = cos x."],
+["Combinatória e probabilidades", "De quantas maneiras se podem escolher 2 alunos de um grupo de 5, sem importar a ordem?", ["10", "20", "5", "25"], 0, "C(5, 2) = 5!/(2! · 3!) = 10."],
+["Combinatória e probabilidades", "De quantas maneiras se podem arrumar 4 livros diferentes numa prateleira?", ["24", "16", "12", "4"], 0, "Permutações de 4 elementos: 4! = 24."],
+["Combinatória e probabilidades", "Lança-se uma moeda equilibrada 3 vezes. Qual é a probabilidade de saírem exactamente 2 caras?", ["3/8", "1/4", "1/2", "1/8"], 0, "Há C(3, 2) = 3 casos favoráveis em 2³ = 8: P = 3/8."]
 ]};
