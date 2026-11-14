@@ -271,7 +271,8 @@ function viewSubject(){
     <button class="act" data-a="studylist"><b>Estudar</b><span class="meta">${topics(s).length} temas com resumos e fórmulas</span></button>
     <button class="act" data-a="go" data-n="40" data-f="1"><b>Treino de 40 perguntas</b><span class="meta">correcção e explicação a cada resposta</span></button>
     <button class="act" data-a="go" data-n="40" data-f="0" data-test="1"><b>Teste de 40 perguntas</b><span class="meta">nota e correcção só no fim, como no exame</span></button>
-    <button class="act" data-a="go" data-n="10" data-f="1"><b>10 perguntas rápidas</b><span class="meta">sorteadas, com correcção imediata</span></button>`;
+    <button class="act" data-a="go" data-n="10" data-f="1"><b>10 perguntas rápidas</b><span class="meta">sorteadas, com correcção imediata</span></button>
+    ${EXAMS.some(e => e.subj === s.id) ? `<button class="act" data-a="exlist"><b>Exames anteriores</b><span class="meta">${EXAMS.filter(e => e.subj === s.id).length} exames com resposta e explicação de cada pergunta</span></button>` : ""}`;
 }
 
 function viewStudyList(){
@@ -279,7 +280,7 @@ function viewStudyList(){
   const rows = topics(s).map((t, i) => {
     const n = s.q.filter(r => r[0] === t).length;
     const x = hist.t[s.id + "|" + t];
-    const info = x ? `${x.k} certas em ${x.a} respostas` : `${n} perguntas`;
+    const info = x ? `${x.k} certas em ${x.a} respostas` : (n ? `${n} perguntas` : "resumo de conteúdos de exame");
     return `<button class="row" style="--c:${s.cor}" data-a="studyt" data-s="${s.id}" data-ti="${i}"><b>${t}</b><span class="meta">${info}</span></button>`;
   }).join("");
   return `
@@ -295,7 +296,7 @@ function viewStudy(){
     <div class="top"><button class="back" data-a="studylist">← Temas</button><span class="meta">${s.nome}, tema ${S.ti + 1} de ${ts.length}</span></div>
     <h1 class="sh" style="--c:${s.cor}">${t}</h1>
     <div class="estudo">${s.estudo[t]}</div>
-    <button class="btn" data-a="gotopic">Treinar este tema</button>
+    ${s.q.some(r => r[0] === t) ? `<button class="btn" data-a="gotopic">Treinar este tema</button>` : (EXAMS.some(e => e.subj === s.id) ? `<button class="btn" data-a="exlist">Praticar nos exames anteriores</button>` : "")}
     ${nx ? `<button class="btn ghost" data-a="studyt" data-s="${s.id}" data-ti="${S.ti + 1}">Tema seguinte: ${nx}</button>` : ""}`;
 }
 
